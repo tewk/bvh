@@ -33,8 +33,8 @@ let direction = Vector3::new(1.0,0.0,0.0);
 let ray = Ray::new(origin, direction);
 
 struct Sphere {
-    position: Point3<f32>,
-    radius: f32,
+    position: Point3<f64>,
+    radius: f64,
 }
 
 impl Bounded for Sphere {
@@ -48,8 +48,8 @@ impl Bounded for Sphere {
 
 let mut spheres = Vec::new();
 for i in 0..1000u32 {
-    let position = Point3::new(i as f32, i as f32, i as f32);
-    let radius = (i % 10) as f32 + 1.0;
+    let position = Point3::new(i as f64, i as f64, i as f64);
+    let radius = (i % 10) as f64 + 1.0;
     spheres.push(Sphere {
         position: position,
         radius: radius,

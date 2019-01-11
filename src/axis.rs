@@ -32,7 +32,7 @@ struct MyType<T>(T);
 /// use nalgebra::Point3;
 ///
 /// # fn main() {
-/// let mut position: Point3<f32> = Point3::new(1.0, 2.0, 3.0);
+/// let mut position: Point3<f64> = Point3::new(1.0, 2.0, 3.0);
 /// position[Axis::X] = 1000.0;
 ///
 /// assert_eq!(position[Axis::X], 1000.0);
@@ -66,19 +66,19 @@ impl Display for Axis {
 }
 
 /// Make slices indexable by `Axis`.
-impl Index<Axis> for [f32] {
-    type Output = f32;
+impl Index<Axis> for [f64] {
+    type Output = f64;
 
-    fn index(&self, axis: Axis) -> &f32 {
+    fn index(&self, axis: Axis) -> &f64 {
         &self[axis as usize]
     }
 }
 
 /// Make `Point3` indexable by `Axis`.
-impl Index<Axis> for Point3<f32> {
-    type Output = f32;
+impl Index<Axis> for Point3<f64> {
+    type Output = f64;
 
-    fn index(&self, axis: Axis) -> &f32 {
+    fn index(&self, axis: Axis) -> &f64 {
         match axis {
             Axis::X => &self.x,
             Axis::Y => &self.y,
@@ -88,10 +88,10 @@ impl Index<Axis> for Point3<f32> {
 }
 
 /// Make `Vector3` indexable by `Axis`.
-impl Index<Axis> for MyType<Vector3<f32>> {
-    type Output = f32;
+impl Index<Axis> for MyType<Vector3<f64>> {
+    type Output = f64;
 
-    fn index(&self, axis: Axis) -> &f32 {
+    fn index(&self, axis: Axis) -> &f64 {
         match axis {
             Axis::X => &self.0.x,
             Axis::Y => &self.0.y,
@@ -101,15 +101,15 @@ impl Index<Axis> for MyType<Vector3<f32>> {
 }
 
 /// Make slices mutably accessible by `Axis`.
-impl IndexMut<Axis> for [f32] {
-    fn index_mut(&mut self, axis: Axis) -> &mut f32 {
+impl IndexMut<Axis> for [f64] {
+    fn index_mut(&mut self, axis: Axis) -> &mut f64 {
         &mut self[axis as usize]
     }
 }
 
 /// Make `Point3` mutably accessible by `Axis`.
-impl IndexMut<Axis> for Point3<f32> {
-    fn index_mut(&mut self, axis: Axis) -> &mut f32 {
+impl IndexMut<Axis> for Point3<f64> {
+    fn index_mut(&mut self, axis: Axis) -> &mut f64 {
         match axis {
             Axis::X => &mut self.x,
             Axis::Y => &mut self.y,
@@ -119,8 +119,8 @@ impl IndexMut<Axis> for Point3<f32> {
 }
 
 /// Make `Vector3` mutably accessible by `Axis`.
-impl IndexMut<Axis> for MyType<Vector3<f32>> {
-    fn index_mut(&mut self, axis: Axis) -> &mut f32 {
+impl IndexMut<Axis> for MyType<Vector3<f64>> {
+    fn index_mut(&mut self, axis: Axis) -> &mut f64 {
         match axis {
             Axis::X => &mut self.0.x,
             Axis::Y => &mut self.0.y,
@@ -135,7 +135,7 @@ mod test {
 
     /// Test whether accessing arrays by index is the same as accessing them by `Axis`.
     quickcheck!{
-        fn test_index_by_axis(tpl: (f32, f32, f32)) -> bool {
+        fn test_index_by_axis(tpl: (f64, f64, f64)) -> bool {
             let a = [tpl.0, tpl.1, tpl.2];
 
             a[0] == a[Axis::X] && a[1] == a[Axis::Y] && a[2] == a[Axis::Z]
@@ -144,7 +144,7 @@ mod test {
 
     /// Test whether arrays can be mutably set, by indexing via `Axis`.
     quickcheck!{
-        fn test_set_by_axis(tpl: (f32, f32, f32)) -> bool {
+        fn test_set_by_axis(tpl: (f64, f64, f64)) -> bool {
             let mut a = [0.0, 0.0, 0.0];
 
             a[Axis::X] = tpl.0;

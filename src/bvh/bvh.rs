@@ -8,7 +8,7 @@ use aabb::{Bounded, AABB};
 use bounding_hierarchy::{BHShape, BoundingHierarchy};
 use nalgebra::Point3;
 use ray::Ray;
-use std::f32;
+use std::f64;
 use std::iter::repeat;
 use utils::{concatenate_vectors, joint_aabb_of_shapes, Bucket};
 use EPSILON;
@@ -296,7 +296,7 @@ impl BVHNode {
                     (shape_center[split_axis] - centroid_bounds.min[split_axis]) / split_axis_size;
 
                 // Convert that to the actual `Bucket` number.
-                let bucket_num = (bucket_num_relative * (NUM_BUCKETS as f32 - 0.01)) as usize;
+                let bucket_num = (bucket_num_relative * (NUM_BUCKETS as f64 - 0.01)) as usize;
 
                 // Extend the selected `Bucket` and add the index to the actual bucket.
                 buckets[bucket_num].add_aabb(&shape_aabb);
@@ -305,7 +305,7 @@ impl BVHNode {
 
             // Compute the costs for each configuration and select the best configuration.
             let mut min_bucket = 0;
-            let mut min_cost = f32::INFINITY;
+            let mut min_cost = f64::INFINITY;
             let mut child_l_aabb = AABB::empty();
             let mut child_r_aabb = AABB::empty();
             for i in 0..(NUM_BUCKETS - 1) {
@@ -313,8 +313,8 @@ impl BVHNode {
                 let child_l = l_buckets.iter().fold(Bucket::empty(), Bucket::join_bucket);
                 let child_r = r_buckets.iter().fold(Bucket::empty(), Bucket::join_bucket);
 
-                let cost = (child_l.size as f32 * child_l.aabb.surface_area()
-                    + child_r.size as f32 * child_r.aabb.surface_area())
+                let cost = (child_l.size as f64 * child_l.aabb.surface_area()
+                    + child_r.size as f64 * child_r.aabb.surface_area())
                     / aabb_bounds.surface_area();
                 if cost < min_cost {
                     min_bucket = i;
@@ -533,8 +533,8 @@ impl BVH {
     pub fn is_consistent<Shape: BHShape>(&self, shapes: &[Shape]) -> bool {
         // The root node of the bvh is not bounded by anything.
         let space = AABB {
-            min: Point3::new(f32::NEG_INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY),
-            max: Point3::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
+            min: Point3::new(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY),
+            max: Point3::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
         };
 
         // The counter for all nodes.
@@ -631,8 +631,8 @@ impl BVH {
     pub fn assert_consistent<Shape: BHShape>(&self, shapes: &[Shape]) {
         // The root node of the bvh is not bounded by anything.
         let space = AABB {
-            min: Point3::new(f32::NEG_INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY),
-            max: Point3::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
+            min: Point3::new(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY),
+            max: Point3::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
         };
 
         // The counter for all nodes.

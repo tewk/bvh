@@ -2,7 +2,7 @@
 #![cfg(test)]
 
 use std::collections::HashSet;
-use std::f32;
+use std::f64;
 use std::fs::File;
 use std::io::BufReader;
 use std::mem::transmute;
@@ -17,27 +17,27 @@ use bounding_hierarchy::{BHShape, BoundingHierarchy};
 use ray::Ray;
 
 /// A vector represented as a tuple
-pub type TupleVec = (f32, f32, f32);
+pub type TupleVec = (f64, f64, f64);
 
 /// Convert a `TupleVec` to a `nalgebra` point.
-pub fn tuple_to_point(tpl: &TupleVec) -> Point3<f32> {
+pub fn tuple_to_point(tpl: &TupleVec) -> Point3<f64> {
     Point3::new(tpl.0, tpl.1, tpl.2)
 }
 
 /// Convert a `TupleVec` to a `nalgebra` vector.
-pub fn tuple_to_vector(tpl: &TupleVec) -> Vector3<f32> {
+pub fn tuple_to_vector(tpl: &TupleVec) -> Vector3<f64> {
     Vector3::new(tpl.0, tpl.1, tpl.2)
 }
 
 /// Define some `Bounded` structure.
 pub struct UnitBox {
     pub id: i32,
-    pub pos: Point3<f32>,
+    pub pos: Point3<f64>,
     node_index: usize,
 }
 
 impl UnitBox {
-    pub fn new(id: i32, pos: Point3<f32>) -> UnitBox {
+    pub fn new(id: i32, pos: Point3<f64>) -> UnitBox {
         UnitBox {
             id: id,
             pos: pos,
@@ -71,7 +71,7 @@ pub fn generate_aligned_boxes() -> Vec<UnitBox> {
     // Create 21 boxes along the x-axis
     let mut shapes = Vec::new();
     for x in -10..11 {
-        shapes.push(UnitBox::new(x, Point3::new(x as f32, 0.0, 0.0)));
+        shapes.push(UnitBox::new(x, Point3::new(x as f64, 0.0, 0.0)));
     }
     shapes
 }
@@ -86,8 +86,8 @@ pub fn build_some_bh<BH: BoundingHierarchy>() -> (Vec<UnitBox>, BH) {
 /// Given a ray, a bounding hierarchy, the complete list of shapes in the scene and a list of
 /// expected hits, verifies, whether the ray hits only the expected shapes.
 fn traverse_and_verify<BH: BoundingHierarchy>(
-    ray_origin: Point3<f32>,
-    ray_direction: Vector3<f32>,
+    ray_origin: Point3<f64>,
+    ray_direction: Vector3<f64>,
     all_shapes: &Vec<UnitBox>,
     bh: &BH,
     expected_shapes: &HashSet<i32>,
@@ -146,15 +146,15 @@ pub fn traverse_some_bh<BH: BoundingHierarchy>() {
 /// A triangle struct. Instance of a more complex `Bounded` primitive.
 #[derive(Debug)]
 pub struct Triangle {
-    pub a: Point3<f32>,
-    pub b: Point3<f32>,
-    pub c: Point3<f32>,
+    pub a: Point3<f64>,
+    pub b: Point3<f64>,
+    pub c: Point3<f64>,
     aabb: AABB,
     node_index: usize,
 }
 
 impl Triangle {
-    pub fn new(a: Point3<f32>, b: Point3<f32>, c: Point3<f32>) -> Triangle {
+    pub fn new(a: Point3<f64>, b: Point3<f64>, c: Point3<f64>) -> Triangle {
         Triangle {
             a: a,
             b: b,
@@ -183,8 +183,8 @@ impl BHShape for Triangle {
 
 impl FromRawVertex for Triangle {
     fn process(
-        vertices: Vec<(f32, f32, f32, f32)>,
-        _: Vec<(f32, f32, f32)>,
+        vertices: Vec<(f64, f64, f64, f64)>,
+        _: Vec<(f64, f64, f64)>,
         polygons: Vec<Polygon>,
     ) -> ObjResult<(Vec<Self>, Vec<u16>)> {
         // Convert the vertices to `Point3`s.
@@ -225,7 +225,7 @@ impl FromRawVertex for Triangle {
 }
 
 /// Creates a unit size cube centered at `pos` and pushes the triangles to `shapes`.
-fn push_cube(pos: Point3<f32>, shapes: &mut Vec<Triangle>) {
+fn push_cube(pos: Point3<f64>, shapes: &mut Vec<Triangle>) {
     let top_front_right = pos + Vector3::new(0.5, 0.5, -0.5);
     let top_back_right = pos + Vector3::new(0.5, 0.5, 0.5);
     let top_back_left = pos + Vector3::new(-0.5, 0.5, 0.5);
@@ -313,13 +313,13 @@ pub fn next_point3_raw(seed: &mut u64) -> (i32, i32, i32) {
 }
 
 /// Generates a new `Point3`, which will lie inside the given `aabb`. Mutates the seed.
-pub fn next_point3(seed: &mut u64, aabb: &AABB) -> Point3<f32> {
+pub fn next_point3(seed: &mut u64, aabb: &AABB) -> Point3<f64> {
     let (a, b, c) = next_point3_raw(seed);
     use std::i32;
     let float_vector = Vector3::new(
-        (a as f32 / i32::MAX as f32) + 1.0,
-        (b as f32 / i32::MAX as f32) + 1.0,
-        (c as f32 / i32::MAX as f32) + 1.0,
+        (a as f64 / i32::MAX as f64) + 1.0,
+        (b as f64 / i32::MAX as f64) + 1.0,
+        (c as f64 / i32::MAX as f64) + 1.0,
     ) * 0.5;
 
     assert!(float_vector.x >= 0.0 && float_vector.x <= 1.0);
@@ -376,7 +376,7 @@ pub fn randomly_transform_scene(
     triangles: &mut Vec<Triangle>,
     amount: usize,
     bounds: &AABB,
-    max_offset_option: Option<f32>,
+    max_offset_option: Option<f64>,
     seed: &mut u64,
 ) -> HashSet<usize> {
     let mut indices: Vec<usize> = (0..triangles.len()).collect();
@@ -392,7 +392,7 @@ pub fn randomly_transform_scene(
     let max_offset = if let Some(value) = max_offset_option {
         value
     } else {
-        f32::INFINITY
+        f64::INFINITY
     };
 
     for index in &indices {

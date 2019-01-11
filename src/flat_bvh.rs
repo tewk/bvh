@@ -164,12 +164,12 @@ impl BVH {
     /// # use bvh::bounding_hierarchy::BHShape;
     /// # pub struct UnitBox {
     /// #     pub id: i32,
-    /// #     pub pos: Point3<f32>,
+    /// #     pub pos: Point3<f64>,
     /// #     node_index: usize,
     /// # }
     /// #
     /// # impl UnitBox {
-    /// #     pub fn new(id: i32, pos: Point3<f32>) -> UnitBox {
+    /// #     pub fn new(id: i32, pos: Point3<f64>) -> UnitBox {
     /// #         UnitBox {
     /// #             id: id,
     /// #             pos: pos,
@@ -199,7 +199,7 @@ impl BVH {
     /// # fn create_bhshapes() -> Vec<UnitBox> {
     /// #     let mut shapes = Vec::new();
     /// #     for i in 0..1000 {
-    /// #         let position = Point3::new(i as f32, i as f32, i as f32);
+    /// #         let position = Point3::new(i as f64, i as f64, i as f64);
     /// #         shapes.push(UnitBox::new(i, position));
     /// #     }
     /// #     shapes
@@ -248,12 +248,12 @@ impl BVH {
     /// # use bvh::bounding_hierarchy::BHShape;
     /// # pub struct UnitBox {
     /// #     pub id: i32,
-    /// #     pub pos: Point3<f32>,
+    /// #     pub pos: Point3<f64>,
     /// #     node_index: usize,
     /// # }
     /// #
     /// # impl UnitBox {
-    /// #     pub fn new(id: i32, pos: Point3<f32>) -> UnitBox {
+    /// #     pub fn new(id: i32, pos: Point3<f64>) -> UnitBox {
     /// #         UnitBox {
     /// #             id: id,
     /// #             pos: pos,
@@ -283,7 +283,7 @@ impl BVH {
     /// # fn create_bhshapes() -> Vec<UnitBox> {
     /// #     let mut shapes = Vec::new();
     /// #     for i in 0..1000 {
-    /// #         let position = Point3::new(i as f32, i as f32, i as f32);
+    /// #         let position = Point3::new(i as f64, i as f64, i as f64);
     /// #         shapes.push(UnitBox::new(i, position));
     /// #     }
     /// #     shapes
@@ -329,12 +329,12 @@ impl BoundingHierarchy for FlatBVH {
     /// # use bvh::bounding_hierarchy::BHShape;
     /// # pub struct UnitBox {
     /// #     pub id: i32,
-    /// #     pub pos: Point3<f32>,
+    /// #     pub pos: Point3<f64>,
     /// #     node_index: usize,
     /// # }
     /// #
     /// # impl UnitBox {
-    /// #     pub fn new(id: i32, pos: Point3<f32>) -> UnitBox {
+    /// #     pub fn new(id: i32, pos: Point3<f64>) -> UnitBox {
     /// #         UnitBox {
     /// #             id: id,
     /// #             pos: pos,
@@ -364,7 +364,7 @@ impl BoundingHierarchy for FlatBVH {
     /// # fn create_bhshapes() -> Vec<UnitBox> {
     /// #     let mut shapes = Vec::new();
     /// #     for i in 0..1000 {
-    /// #         let position = Point3::new(i as f32, i as f32, i as f32);
+    /// #         let position = Point3::new(i as f64, i as f64, i as f64);
     /// #         shapes.push(UnitBox::new(i, position));
     /// #     }
     /// #     shapes

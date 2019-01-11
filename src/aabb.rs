@@ -1,6 +1,6 @@
 //! Axis Aligned Bounding Boxes.
 
-use std::f32;
+use std::f64;
 use std::fmt;
 use std::ops::Index;
 
@@ -12,10 +12,10 @@ use axis::Axis;
 #[derive(Debug, Copy, Clone)]
 pub struct AABB {
     /// Minimum coordinates
-    pub min: Point3<f32>,
+    pub min: Point3<f64>,
 
     /// Maximum coordinates
-    pub max: Point3<f32>,
+    pub max: Point3<f64>,
 }
 
 impl fmt::Display for AABB {
@@ -73,7 +73,7 @@ impl AABB {
     ///
     /// [`AABB`]: struct.AABB.html
     ///
-    pub fn with_bounds(min: Point3<f32>, max: Point3<f32>) -> AABB {
+    pub fn with_bounds(min: Point3<f64>, max: Point3<f64>) -> AABB {
         AABB { min, max }
     }
 
@@ -105,8 +105,8 @@ impl AABB {
     ///
     pub fn empty() -> AABB {
         AABB {
-            min: Point3::new(f32::INFINITY, f32::INFINITY, f32::INFINITY),
-            max: Point3::new(f32::NEG_INFINITY, f32::NEG_INFINITY, f32::NEG_INFINITY),
+            min: Point3::new(f64::INFINITY, f64::INFINITY, f64::INFINITY),
+            max: Point3::new(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY),
         }
     }
 
@@ -128,7 +128,7 @@ impl AABB {
     /// [`AABB`]: struct.AABB.html
     /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
     ///
-    pub fn contains(&self, p: &Point3<f32>) -> bool {
+    pub fn contains(&self, p: &Point3<f64>) -> bool {
         p.x >= self.min.x
             && p.x <= self.max.x
             && p.y >= self.min.y
@@ -157,7 +157,7 @@ impl AABB {
     /// [`AABB`]: struct.AABB.html
     /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
     ///
-    pub fn approx_contains_eps(&self, p: &Point3<f32>, epsilon: f32) -> bool {
+    pub fn approx_contains_eps(&self, p: &Point3<f64>, epsilon: f64) -> bool {
         (p.x - self.min.x) > -epsilon
             && (p.x - self.max.x) < epsilon
             && (p.y - self.min.y) > -epsilon
@@ -184,7 +184,7 @@ impl AABB {
     /// ```
     ///
     /// [`AABB`]: struct.AABB.html
-    pub fn approx_contains_aabb_eps(&self, other: &AABB, epsilon: f32) -> bool {
+    pub fn approx_contains_aabb_eps(&self, other: &AABB, epsilon: f64) -> bool {
         self.approx_contains_eps(&other.min, epsilon)
             && self.approx_contains_eps(&other.max, epsilon)
     }
@@ -207,7 +207,7 @@ impl AABB {
     /// ```
     ///
     /// [`AABB`]: struct.AABB.html
-    pub fn relative_eq(&self, other: &AABB, epsilon: f32) -> bool {
+    pub fn relative_eq(&self, other: &AABB, epsilon: f64) -> bool {
         relative_eq!(self.min, other.min, epsilon = epsilon)
             && relative_eq!(self.max, other.max, epsilon = epsilon)
     }
@@ -332,7 +332,7 @@ impl AABB {
     /// [`AABB`]: struct.AABB.html
     /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
     ///
-    pub fn grow(&self, other: &Point3<f32>) -> AABB {
+    pub fn grow(&self, other: &Point3<f64>) -> AABB {
         AABB::with_bounds(
             Point3::new(
                 self.min.x.min(other.x),
@@ -373,7 +373,7 @@ impl AABB {
     /// [`AABB::grow`]: struct.AABB.html
     /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
     ///
-    pub fn grow_mut(&mut self, other: &Point3<f32>) {
+    pub fn grow_mut(&mut self, other: &Point3<f64>) {
         self.min = Point3::new(
             self.min.x.min(other.x),
             self.min.y.min(other.y),
@@ -433,7 +433,7 @@ impl AABB {
     ///
     /// [`AABB`]: struct.AABB.html
     ///
-    pub fn size(&self) -> Vector3<f32> {
+    pub fn size(&self) -> Vector3<f64> {
         self.max - self.min
     }
 
@@ -455,7 +455,7 @@ impl AABB {
     /// [`AABB`]: struct.AABB.html
     /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
     ///
-    pub fn center(&self) -> Point3<f32> {
+    pub fn center(&self) -> Point3<f64> {
         self.min + (self.size() / 2.0)
     }
 
@@ -500,7 +500,7 @@ impl AABB {
     ///
     /// [`AABB`]: struct.AABB.html
     ///
-    pub fn surface_area(&self) -> f32 {
+    pub fn surface_area(&self) -> f64 {
         let size = self.size();
         2.0 * (size.x * size.y + size.x * size.z + size.y * size.z)
     }
@@ -522,7 +522,7 @@ impl AABB {
     ///
     /// [`AABB`]: struct.AABB.html
     ///
-    pub fn volume(&self) -> f32 {
+    pub fn volume(&self) -> f64 {
         let size = self.size();
         size.x * size.y * size.z
     }
@@ -587,9 +587,9 @@ impl Default for AABB {
 /// [`AABB`]: struct.AABB.html
 ///
 impl Index<usize> for AABB {
-    type Output = Point3<f32>;
+    type Output = Point3<f64>;
 
-    fn index(&self, index: usize) -> &Point3<f32> {
+    fn index(&self, index: usize) -> &Point3<f64> {
         if index == 0 {
             &self.min
         } else {
@@ -640,7 +640,7 @@ impl Bounded for AABB {
 /// [`Bounded`]: trait.Bounded.html
 /// [`Point3`]: http://nalgebra.org/doc/nalgebra/struct.Point3.html
 ///
-impl Bounded for Point3<f32> {
+impl Bounded for Point3<f64> {
     fn aabb(&self) -> AABB {
         AABB::with_bounds(*self, *self)
     }
@@ -706,7 +706,7 @@ mod tests {
             let points = [a.0, a.1, a.2, a.3, a.4, b.0, b.1, b.2, b.3, b.4];
 
             // Convert these points to `Point3`
-            let points = points.iter().map(tuple_to_point).collect::<Vec<Point3<f32>>>();
+            let points = points.iter().map(tuple_to_point).collect::<Vec<Point3<f64>>>();
 
             // Create two `AABB`s. One spanned the first five points,
             // the other by the last five points
@@ -775,7 +775,7 @@ mod tests {
 
     /// Compute and compare the surface area of an AABB by hand.
     quickcheck!{
-        fn test_surface_area_cube(pos: TupleVec, size: f32) -> bool {
+        fn test_surface_area_cube(pos: TupleVec, size: f64) -> bool {
             // Generate some non-empty AABB
             let pos = tuple_to_point(&pos);
             let size_vec = Vector3::new(size, size, size);

@@ -3,23 +3,23 @@
 
 use aabb::AABB;
 use nalgebra::{Point3, Vector3};
-use std::f32::INFINITY;
+use std::f64::INFINITY;
 use EPSILON;
 
 /// A struct which defines a ray and some of its cached values.
 #[derive(Debug)]
 pub struct Ray {
     /// The ray origin.
-    pub origin: Point3<f32>,
+    pub origin: Point3<f64>,
 
     /// The ray direction.
-    pub direction: Vector3<f32>,
+    pub direction: Vector3<f64>,
 
     /// Inverse (1/x) ray direction. Cached for use in [`AABB`] intersections.
     ///
     /// [`AABB`]: struct.AABB.html
     ///
-    inv_direction: Vector3<f32>,
+    inv_direction: Vector3<f64>,
 
     /// Sign of the direction. 0 means positive, 1 means negative.
     /// Cached for use in [`AABB`] intersections.
@@ -32,19 +32,19 @@ pub struct Ray {
 /// A struct which is returned by the `intersects_triangle` method.
 pub struct Intersection {
     /// Distance from the ray origin to the intersection point.
-    pub distance: f32,
+    pub distance: f64,
 
     /// U coordinate of the intersection.
-    pub u: f32,
+    pub u: f64,
 
     /// V coordinate of the intersection.
-    pub v: f32,
+    pub v: f64,
 }
 
 impl Intersection {
     /// Constructs an `Intersection`. `distance` should be set to positive infinity,
     /// if the intersection does not occur.
-    pub fn new(distance: f32, u: f32, v: f32) -> Intersection {
+    pub fn new(distance: f64, u: f64, v: f64) -> Intersection {
         Intersection {
             distance,
             u,
@@ -72,7 +72,7 @@ impl Ray {
     ///
     /// [`Ray`]: struct.Ray.html
     ///
-    pub fn new(origin: Point3<f32>, direction: Vector3<f32>) -> Ray {
+    pub fn new(origin: Point3<f64>, direction: Vector3<f64>) -> Ray {
         let direction = direction.normalize();
         Ray {
             origin,
@@ -251,9 +251,9 @@ impl Ray {
     /// it from behind.
     pub fn intersects_triangle(
         &self,
-        a: &Point3<f32>,
-        b: &Point3<f32>,
-        c: &Point3<f32>,
+        a: &Point3<f64>,
+        b: &Point3<f64>,
+        c: &Point3<f64>,
     ) -> Intersection {
         let a_to_b = *b - *a;
         let a_to_c = *c - *a;
@@ -311,7 +311,7 @@ impl Ray {
 #[cfg(test)]
 mod tests {
     use std::cmp;
-    use std::f32::INFINITY;
+    use std::f64::INFINITY;
 
     use rand::{Rng, SeedableRng, StdRng};
 
@@ -425,8 +425,8 @@ mod tests {
             // Get some u and v coordinates such that u+v <= 1
             let u = u % 101;
             let v = cmp::min(100 - u, v % 101);
-            let u = u as f32 / 100.0;
-            let v = v as f32 / 100.0;
+            let u = u as f64 / 100.0;
+            let v = v as f64 / 100.0;
 
             // Define some point on the triangle
             let point_on_triangle = triangle.0 + u * u_vec + v * v_vec;
